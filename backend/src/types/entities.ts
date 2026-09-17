@@ -49,6 +49,38 @@ export interface OrderDTO {
   promo?: PromoEntity;
 }
 
+export interface PaymentDetails {
+  cardNumber: string;
+  cardHolder: string;
+  expiryDate: string;
+  cvv: string;
+}
+
+export interface OrderDetails {
+  products: Array<{
+    id: string;
+    amount: number;
+    price: number;
+  }>;
+  total: number;
+}
+
+export interface CheckoutRequest {
+  id: string;
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  deliveryAddress: string;
+  paymentMethod: string;
+  payment: PaymentDetails;
+  order: OrderDetails;
+}
+
+export interface CheckoutResponse {
+  id: string;
+  status: 'success';
+}
+
 export interface PromoEntity {
   id: string;
   discount: number;

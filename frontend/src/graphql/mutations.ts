@@ -16,6 +16,16 @@ export const SUBMIT_ORDER = gql`
   }
 `;
 
+// Mutation to checkout (pay for) an order
+export const CHECKOUT = gql`
+  mutation Checkout($input: CheckoutInput!) {
+    checkout(input: $input) {
+      id
+      status
+    }
+  }
+`;
+
 // Mutation to delete a product from an order
 export const DELETE_PRODUCT_FROM_ORDER = gql`
   mutation DeleteProductFromOrder($orderId: ID!, $productId: ID!) {

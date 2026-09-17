@@ -48,6 +48,34 @@ export const typeDefs = gql`
     token: String!
   }
 
+  input PaymentDetailsInput {
+    cardNumber: String!
+    cardHolder: String!
+    expiryDate: String!
+    cvv: String!
+  }
+
+  input OrderDetailsInput {
+    products: [ProductInput!]!
+    total: Float!
+  }
+
+  input CheckoutInput {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    emailAddress: String!
+    deliveryAddress: String!
+    paymentMethod: String!
+    payment: PaymentDetailsInput!
+    order: OrderDetailsInput!
+  }
+
+  type CheckoutResult {
+    id: ID!
+    status: String!
+  }
+
   type Query {
     orders: [Order!]!
     order(orderId: ID!): Order
@@ -59,5 +87,6 @@ export const typeDefs = gql`
     login(input: LoginInput!): LoginResponse!
     submitOrder(orderId: ID!): Boolean!
     deleteProductFromOrder(orderId: ID!, productId: ID!): Order
+    checkout(input: CheckoutInput!): CheckoutResult!
   }
 `;

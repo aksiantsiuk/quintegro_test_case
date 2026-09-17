@@ -10,12 +10,15 @@ import { createAuthRoutes } from './routes/authRoutes';
 import { createOrderRoutes } from './routes/orderRoutes';
 import { createPromoRoutes } from './routes/promoRoutes';
 import { createResetRoutes } from './routes/resetRoutes';
+import { createCheckoutRoutes } from './routes/checkoutRoutes';
 import { AuthController } from './controllers/authController';
 import { OrderController } from './controllers/orderController';
 import { PromoController } from './controllers/promoController';
+import { CheckoutController } from './controllers/checkoutController';
 import { AuthService } from './services/authService';
 import { OrderService } from './services/orderService';
 import { PromoService } from './services/promoService';
+import { CheckoutService } from './services/checkoutService';
 import { InMemoryUserRepository, InMemoryAuthRepository, InMemoryOrderRepository, InMemoryProductRepository, InMemoryPromoRepository } from './repositories/implementations';
 
 export class App {
@@ -59,16 +62,19 @@ export class App {
     const authService = new AuthService(authRepository, userRepository);
     const orderService = new OrderService(orderRepository, productRepository, promoRepository);
     const promoService = new PromoService(promoRepository);
+    const checkoutService = new CheckoutService(orderService);
 
     // Initialize controllers
     const authController = new AuthController(authService);
     const orderController = new OrderController(orderService, authService);
     const promoController = new PromoController(promoService);
+    const checkoutController = new CheckoutController(checkoutService, authService);
 
     // Setup routes
     this.app.use('/api', createAuthRoutes(authController));
     this.app.use('/api/order', createOrderRoutes(orderController));
     this.app.use('/api/promo', createPromoRoutes(promoController));
+    this.app.use('/api/checkout', createCheckoutRoutes(checkoutController));
     this.app.use('/reset/orders', createResetRoutes(this.orderRepositories));
 
     // Health check endpoint
@@ -86,7 +92,8 @@ export class App {
           health: '/health',
           login: '/api/login',
           orders: '/api/order',
-          promos: '/api/promo'
+          promos: '/api/promo',
+          checkout: '/api/checkout'
         }
       });
     });
@@ -109,9 +116,10 @@ export class App {
     const authService = new AuthService(authRepository, userRepository);
     const orderService = new OrderService(orderRepository, productRepository, promoRepository);
     const promoService = new PromoService(promoRepository);
+    const checkoutService = new CheckoutService(orderService);
 
     // Create Apollo Server
-    const apolloServer = createApolloServer(orderService, authService, promoService);
+    const apolloServer = createApolloServer(orderService, authService, promoService, checkoutService);
     await apolloServer.start();
 
     // Apply Apollo Server middleware
